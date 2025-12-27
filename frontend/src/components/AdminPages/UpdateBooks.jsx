@@ -19,7 +19,7 @@ const UpdateBooks = () => {
     window.scrollTo(0, 0);
     const fetch = async () => {
       const res = await axios.get(
-        `https://bookverse-tpi0.onrender.com/api/v1/get-book-by-id/${id}`
+        `https://bookapp-d1oh.onrender.com/api/v1/get-book-by-id/${id}`
       );
 
       setData({

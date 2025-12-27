@@ -31,7 +31,7 @@ const Signup = () => {
         alert("All fields are required");
       } else {
         const response = await axios.post(
-          "https://bookverse-tpi0.onrender.com/api/v1/sign-up",
+          "https://bookapp-d1oh.onrender.com/api/v1/sign-up",
           Data
         );
         setData({ username: "", email: "", password: "", address: "" });

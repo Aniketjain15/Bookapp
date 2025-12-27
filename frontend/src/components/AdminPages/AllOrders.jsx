@@ -36,7 +36,7 @@ const AllOrders = () => {
   const submitChanges = async (i) => {
     const id = OrderHistory[i]._id;
     const response = await axios.put(
-      `https://bookverse-tpi0.onrender.com/api/v1/update-status/${id}`,
+      `https://bookapp-d1oh.onrender.com/api/v1/update-status/${id}`,
       Values,
       { headers }
     );

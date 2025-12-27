@@ -16,7 +16,7 @@ const Settings = () => {
   useEffect(() => {
     const fetch = async () => {
       const response = await axios.get(
-        "https://bookverse-tpi0.onrender.com/api/v1/getUserData",
+        "https://bookapp-d1oh.onrender.com/api/v1/getUserData",
         { headers }
       );
       setProfileData(response.data);

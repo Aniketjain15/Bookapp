@@ -6,7 +6,7 @@ const RecentlyAdded = () => {
   useEffect(() => {
     const fetch = async () => {
       const response = await axios.get(
-        "https://bookverse-tpi0.onrender.com/api/v1/get-recent-books"
+        "https://bookapp-d1oh.onrender.com/api/v1/get-recent-books"
       );
       setBooks(response.data.data);
     };

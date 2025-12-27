@@ -66,7 +66,7 @@ const AllBooks = () => {
     const fetchBooks = async () => {
       try {
         const response = await axios.get(
-          "https://bookverse-tpi0.onrender.com/api/v1/get-all-books"
+          "https://bookapp-d1oh.onrender.com/api/v1/get-all-books"
         );
         setBooks(response.data.data || []); // fallback empty array
       } catch (err) {

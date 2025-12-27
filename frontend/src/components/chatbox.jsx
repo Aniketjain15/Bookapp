@@ -26,7 +26,7 @@ const ChatBox = ({ onClose }) => {
     setInput("");
 
     try {
-      const res = await axios.post("https://bookverse-tpi0.onrender.com/api/chat", {
+      const res = await axios.post("https://bookapp-d1oh.onrender.com/api/chat", {
         message: userMsg.text,
       });
 
