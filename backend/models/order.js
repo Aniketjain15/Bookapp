@@ -1,22 +1,23 @@
 const mongoose = require("mongoose");
-
-const order = new mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: "user",
-    },
-    book: {
-      type: mongoose.Types.ObjectId,
-      ref: "books",
-    },
-    status: {
-      type: String,
-      default: "Order placed",
-      enum: ["Order placed", "Out for delivery", "Delivered", "Canceled"],
-    },
+const orderSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  { timestamps: true }
-);
+  book: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Book",
+    required: true,
+  },
+  paymentId: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-module.exports = mongoose.model("order", order);
+module.exports = mongoose.model("Order", orderSchema);

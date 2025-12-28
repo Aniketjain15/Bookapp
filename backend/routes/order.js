@@ -4,30 +4,60 @@ const { authenticateToken } = require("./userAuth");
 const Book = require("../models/book");
 const Order = require("../models/order");
 
-//place order
+// PLACE ORDER (After Razorpay Verification)
 router.post("/place-order", authenticateToken, async (req, res) => {
   try {
-    const { id } = req.headers;
-    const { order } = req.body;
-    for (const orderData of order) {
-      const newOrder = new Order({ user: id, book: orderData._id });
-      const orderDataFromDb = await newOrder.save();
-      //saving Order in user model
-      await User.findByIdAndUpdate(id, {
-        $push: { orders: orderDataFromDb._id },
+    const userId = req.user.id;
+
+    const {
+      order, // cart items
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    // 🔐 VERIFY PAYMENT SIGNATURE
+    const crypto = require("crypto");
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign)
+      .digest("hex");
+
+    if (expectedSign !== razorpay_signature) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Payment verification failed",
       });
-      //clearing cart
-      await User.findByIdAndUpdate(id, {
+    }
+
+    // ✅ PAYMENT VERIFIED → PLACE ORDER
+    for (const orderData of order) {
+      const newOrder = new Order({
+        user: userId,
+        book: orderData._id,
+        paymentId: razorpay_payment_id,
+      });
+
+      const savedOrder = await newOrder.save();
+
+      await User.findByIdAndUpdate(userId, {
+        $push: { orders: savedOrder._id },
         $pull: { cart: orderData._id },
       });
     }
-    return res.json({
+
+    return res.status(200).json({
       status: "Success",
-      message: "Order Placed Successfully",
+      message: "Payment verified & order placed successfully",
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "An error occurred" });
+    console.error(error);
+    return res.status(500).json({
+      status: "Error",
+      message: "Something went wrong while placing order",
+    });
   }
 });
 
