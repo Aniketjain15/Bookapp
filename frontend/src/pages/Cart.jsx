@@ -183,7 +183,7 @@ const Cart = () => {
 
     const fetchCart = async () => {
       const res = await axios.get(
-        "https://bookverse-tpi0.onrender.com/api/v1/get-user-cart",
+        "https://bookapp-d1oh.onrender.com/api/v1/get-user-cart",
         { headers }
       );
       setCart(res.data.data);
@@ -202,7 +202,7 @@ const Cart = () => {
   // 🔹 Remove item
   const deleteItem = async (id) => {
     await axios.put(
-      `https://bookverse-tpi0.onrender.com/api/v1/remove-from-cart/${id}`,
+      `https://bookapp-d1oh.onrender.com/api/v1/remove-from-cart/${id}`,
       {},
       { headers }
     );
@@ -216,7 +216,7 @@ const Cart = () => {
 
       // 1️⃣ Create Razorpay order
       const { data: razorpayOrder } = await axios.post(
-        "https://bookverse-tpi0.onrender.com/api/v1/create-razorpay-order",
+        "https://bookapp-d1oh.onrender.com/api/v1/create-razorpay-order",
         { amount: total },
         { headers }
       );
@@ -232,7 +232,7 @@ const Cart = () => {
         handler: async function (response) {
           // 3️⃣ Verify & place order
           await axios.post(
-            "https://bookverse-tpi0.onrender.com/api/v1/place-order",
+            "https://bookapp-d1oh.onrender.com/api/v1/place-order",
             {
               order: cart,
               razorpay_order_id: response.razorpay_order_id,
