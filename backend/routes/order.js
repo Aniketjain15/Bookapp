@@ -4,62 +4,33 @@ const { authenticateToken } = require("./userAuth");
 const Book = require("../models/book");
 const Order = require("../models/order");
 
-// PLACE ORDER (After Razorpay Verification)
+//place order
 router.post("/place-order", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    const {
-      order, // cart items
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    } = req.body;
-
-    // 🔐 VERIFY PAYMENT SIGNATURE
-    const crypto = require("crypto");
-    const sign = razorpay_order_id + "|" + razorpay_payment_id;
-
-    const expectedSign = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(sign)
-      .digest("hex");
-
-    if (expectedSign !== razorpay_signature) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "Payment verification failed",
-      });
-    }
-
-    // ✅ PAYMENT VERIFIED → PLACE ORDER
+    const { id } = req.headers;
+    const { order } = req.body;
     for (const orderData of order) {
-      const newOrder = new Order({
-        user: userId,
-        book: orderData._id,
-        paymentId: razorpay_payment_id,
+      const newOrder = new Order({ user: id, book: orderData._id });
+      const orderDataFromDb = await newOrder.save();
+      //saving Order in user model
+      await User.findByIdAndUpdate(id, {
+        $push: { orders: orderDataFromDb._id },
       });
-
-      const savedOrder = await newOrder.save();
-
-      await User.findByIdAndUpdate(userId, {
-        $push: { orders: savedOrder._id },
+      //clearing cart
+      await User.findByIdAndUpdate(id, {
         $pull: { cart: orderData._id },
       });
     }
-
-    return res.status(200).json({
+    return res.json({
       status: "Success",
-      message: "Payment verified & order placed successfully",
+      message: "Order Placed Successfully",
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      status: "Error",
-      message: "Something went wrong while placing order",
-    });
+    console.log(error);
+    return res.status(500).json({ message: "An error occurred" });
   }
 });
+
 
 //get order history of particular user
 router.get("/get-order-history", authenticateToken, async (req, res) => {
