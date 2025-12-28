@@ -20,7 +20,7 @@ const AllOrders = () => {
   useEffect(() => {
     const fetch = async () => {
       const res = await axios.get(
-        "https://bookverse-tpi0.onrender.com/api/v1/get-all-orders",
+        "https://bookapp-d1oh.onrender.com/api/v1/get-all-orders",
         { headers }
       );
 
