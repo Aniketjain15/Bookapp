@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 1000;
 // Allow only your Netlify frontend
 app.use(
   cors({
-    origin: "https://bookapp-d1oh.onrender.com",
+    origin: "https://bookverse-47wi.onrender.com",
     credentials: true,
   })
 );
